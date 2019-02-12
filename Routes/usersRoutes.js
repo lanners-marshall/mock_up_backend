@@ -48,6 +48,13 @@ router.get('', (req, res) => {
 	})
 })
 
+
+//READ
+//get a user and all that users events
+//get http://localhost:5555/users/:id
+// to-do
+
+
 //UPDATE
 //update a user
 //put http://localhost:5555/users/:id
@@ -72,11 +79,13 @@ router.put('/:id', (req , res) => {
 //delete a user
 //delete http://localhost:5555/users
 //-------------------------------------------
-router.delete('/:id' (req, res) => {
+router.delete('/:id', (req, res) => {
 	const {id} = req.params
-	db('user')
+	db('users')
 	.where({id})
+	.del()
 	.then(response => {
+		console.log(response)
 		return res.status(200).json(response)
 	})
 	.catch(error => {

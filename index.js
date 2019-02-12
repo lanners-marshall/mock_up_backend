@@ -15,12 +15,12 @@ server.use(cors())
 
 
 const userRoutes = require('./Routes/usersRoutes')
-// const eventsRoutes = require('./Routes/eventsRoutes')
+const eventsRoutes = require('./Routes/eventsRoutes')
 // const favoritesRoutes = require('./Routes/favoritesRoutes')
 // const friendsRoutes = require('./Routes/friendsRoutes')
 
 server.use('/users', userRoutes)
-// server.use('/events', eventsRoutes)
+server.use('/events', eventsRoutes)
 // server.use('/favorites', favoritesRoutes)
 // server.use('/friends', friendsRoutes)
 
