@@ -72,17 +72,14 @@ router.get('', (req, res) => {
 
 router.get('/:id', (req, res) => {
 	const { id } = req.params
-	console.log(id)
 	db('events')
 	.join('users_events', 'users_events.user_id', '=', 'users.id')
 	.join('users', 'events.id', '=', 'users_events.event_id')
 	.where('events.id', id)
 	.then(response => {
-		console.log(response)
 		res.status(200).json(response)
 	})
 	.catch(error => {
-		console.log(error)
 		res.status(500).json(error)
 	})
 })

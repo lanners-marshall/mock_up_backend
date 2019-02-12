@@ -34,41 +34,6 @@ router.post('', (req, res) => {
 	})
 })
 
-//CREATE
-//user signs up to go to an event
-//post http://localhost:5555/users/events
-router.post('/events', (req, res) => {
-
-	//would have to pass this is fron the front end
-	const {user_id, event_id} = req.body
-
-	//check is user is already going to event
-	db('users_events')
-	.where({user_id, event_id})
-	.then(response => {
-
-		// if user attemps to sign up for event he is already going to
-		if (response.length > 0){
-			return res.status(200).json({msg: 'you are aleady going to this event'})
-		} else {
-		
-			//user adds event since he is not yet going to event
-			db.insert({user_id, event_id}).into('users_events')
-			.then(response => {
-				return res.status(200).json(response)
-			})
-			//catch error for adding event
-			.catch(error => {
-				return res.status(500).json(error)
-			})
-		}
-	})
-	//catch error for looking up if user is going to event
-	.catch(error => {
-		return res.status(500).json(error)
-	})
-})
-
 //READ
 //get all users
 //get http://localhost:5555/users
