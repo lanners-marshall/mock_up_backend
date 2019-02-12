@@ -7,6 +7,7 @@ const db = knex(dbConfig.development)
 //CREATE
 //user signs up to go to an event
 //post http://localhost:5555/users_events
+//-------------------------------------------
 router.post('', (req, res) => {
 
 	//would have to pass this is fron the front end
