@@ -21,8 +21,16 @@ router.post('', (req, res) => {
 
 		if (response.length === 0){
 			db.insert({name, email}).into('users')
-			.then(users => {
-				return res.status(201).json(users)
+			.then(() => {
+
+				/*each time we make a user that user could be a possible friend
+				so we add them to friends table and fliter it later */
+
+				db.insert({name, email}).into('friends')
+				.then(response => {
+					return res.status(201).json(response)
+				})
+				
 			})
 		} else {
 			return  res.status(200).json(response)
@@ -100,8 +108,17 @@ router.put('/:id', (req , res) => {
 	db('users')
 	.where({id})
 	.update({name, email})
-	.then(response => {
-		return res.status(200).json(response)
+	.then(() => {
+
+		/*since the id of the user will always match that users version
+		in the friends table we update both with same id*/
+
+		db('friends')
+		.where({id})
+		.update({name, email})
+		.then(response => {
+			return res.status(200).json(response)
+		})
 	})
 	.catch(error => {
 		return res.status(500).json(error)
@@ -117,9 +134,16 @@ router.delete('/:id', (req, res) => {
 	db('users')
 	.where({id})
 	.del()
-	.then(response => {
-		console.log(response)
-		return res.status(200).json(response)
+	.then(() => {
+
+		//delete a user and that user as being a possible friend
+
+		db('friends')
+		.where({id})
+		.del()
+		.then(response => {
+			return res.status(200).json(response)
+		})
 	})
 	.catch(error => {
 		return res.status(500).json(error)
