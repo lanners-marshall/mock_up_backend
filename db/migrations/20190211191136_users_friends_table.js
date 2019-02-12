@@ -10,7 +10,7 @@ exports.up = function(knex, Promise) {
   		.inTable('users')
 
   	tbl
-  		.integer('event_id')
+  		.integer('friends_id')
   		.unsigned()
   		.notNullable()
   		.references('id')
