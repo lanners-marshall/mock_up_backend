@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const knex = require('knex')
+const knex = require("knex")
 const dbConfig = require('../knexfile')
-const db = knex(dbConfig.development)
+const db = require("../config.js")
 
 //Create
 //create a new event

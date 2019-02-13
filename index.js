@@ -6,13 +6,10 @@ const cors = require('cors')
 const morgan = require('morgan')
 const knex = require('knex')
 
-const dbConfig = require('./knexfile')
-
 server.use(express.json());
 server.use(helmet());
 server.use(morgan('tiny'))
 server.use(cors())
-
 
 const userRoutes = require('./Routes/usersRoutes')
 const eventsRoutes = require('./Routes/eventsRoutes')
