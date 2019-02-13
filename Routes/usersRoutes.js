@@ -25,9 +25,15 @@ router.post('', (req, res) => {
 				so we add them to friends table and fliter it later */
 
 				db.insert({name, email}).into('friends')
-				.then(response => {
+				.then(() => {
 					
-					return res.status(201).json(response)
+					
+					db('users')
+					.where({name, email})
+					.then(response => {
+						let id = response[0].id
+						return res.status(200).json([id])
+					})
 				})
 				
 			})
