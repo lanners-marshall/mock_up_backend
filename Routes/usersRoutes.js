@@ -9,15 +9,14 @@ const db = require('../config.js')
 //-------------------------------------------
 router.post("", (req, res) => {
   const { name, email } = req.body;
-  let id
+  
   db("users")
     .insert({
       name: name,
       email: email
     })
     .then(ids => {
-    	id = ids[0]
-      res.status(201).json(id);
+      res.status(201).json(ids[0]);
     })
     .catch(err => {
 
