@@ -23,8 +23,9 @@ router.post("", (req, res) => {
         //return res.status(201).json(user[0])
         db('users')
         .where({ name, email })
-        .then(response => {
-          return res.status(200).json(response[0].id)
+        .then(res2 => {
+          console.log(res2)
+          return res.status(200).json(res2[0].id)
         })
       }) //else return users
     } else {
