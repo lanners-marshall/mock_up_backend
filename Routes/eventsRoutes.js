@@ -11,18 +11,16 @@ const db = require("../config.js")
 router.post('', (req, res) => {
 	const {name, location, date, user_id } = req.body;
 	db.insert({name, location, date }).into('events')
-	.then(response => {
-		
-		//if a user makes an event then that user is going to it
-		//response[0] is the id of the new event
-
-		let obj = {user_id, event_id: response[0]}
-		db.insert(obj).into('users_events')
-		.then(response => {
-			return res.status(201).json(response)
-		})
-		.catch(error => {
-			return res.status(500).json(error)
+	.then(() => {
+		db('events')
+		.where({name, location, date })
+		.then(r1 => {
+			id = r1[0].id
+			let obj = {user_id, event_id: id}
+			db.insert(obj).int('users_events')
+			.then(r2 => {
+				return res.status(200).json(response)
+			})
 		})
 	})
 	.catch(error => {
