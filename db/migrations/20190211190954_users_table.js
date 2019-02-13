@@ -9,6 +9,7 @@ exports.up = function(knex, Promise) {
     tbl
       .string('email', 128)
       .notNullable()
+      .unique()
 
   })
 };

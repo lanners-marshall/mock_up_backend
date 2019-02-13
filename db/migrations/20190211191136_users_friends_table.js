@@ -8,13 +8,16 @@ exports.up = function(knex, Promise) {
   		.notNullable()
   		.references('id')
   		.inTable('users')
+      .onDelete('CASCADE')
+
 
   	tbl
   		.integer('friends_id')
   		.unsigned()
   		.notNullable()
-  		.references('id')
-  		.inTable('friends')
+      .references('id')
+      .inTable('users')
+      .onDelete('CASCADE')
 
   })
 };

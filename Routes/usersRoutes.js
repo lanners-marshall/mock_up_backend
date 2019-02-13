@@ -7,53 +7,32 @@ const db = require('../config.js')
 //create a new user
 //post http://localhost:5555/users
 //-------------------------------------------
-router.post('', (req, res) => {
-	const {name, email } = req.body;
+router.post("", (req, res) => {
+  const { name, email } = req.body;
+  let id
+  db("users")
+    .insert({
+      name: name,
+      email: email
+    })
+    .then(ids => {
+    	id = ids[0]
+      res.status(201).json(id);
+    })
+    .catch(err => {
 
-	db('users')
-	.where({email})
-	.then(response => {
+    	/*
+	    	work around to get users id back if they are already in the the database
+	    	because we have users email set to unique
+    	*/
 
-		/*only add a user to database if one does not exist already upon login
-		either way we get the users info back*/
-
-		if (response.length === 0){
-			db.insert({name, email}).into('users')
-			.then(() => {
-
-				/*each time we make a user that user could be a possible friend
-				so we add them to friends table and fliter it later */
-
-				db.insert({name, email}).into('friends')
-				.then(() => {
-					
-					
-					db('users')
-					.where({name, email})
-					.then(response => {
-						let id = response[0].id
-						return res.status(200).json([id])
-					})
-				})
-				
-			})
-		} else {
-
-			/*
-				this way you do the check the same way no matter what
-				for when a user signs in vs sign up on the front end
-				to get the id
-			*/
-			
-			let id = response[0].id
-			return  res.status(200).json([id])
-		}
-	})
-	.catch(error => {
-		console.log(error)
-		return res.status(500).json(error)
-	})
-})
+      db('users')
+      .where({email})
+      .then(response => {
+      	res.status(200).json(response[0].id)
+      })
+    });
+});
 
 //READ
 //get all users
@@ -121,17 +100,8 @@ router.put('/:id', (req , res) => {
 	db('users')
 	.where({id})
 	.update({name, email})
-	.then(() => {
-
-		/*since the id of the user will always match that users version
-		in the friends table we update both with same id*/
-
-		db('friends')
-		.where({id})
-		.update({name, email})
-		.then(response => {
-			return res.status(200).json(response)
-		})
+	.then(response => {
+		return res.status(200).json(response)
 	})
 	.catch(error => {
 		return res.status(500).json(error)
@@ -140,27 +110,35 @@ router.put('/:id', (req , res) => {
 
 //DELETE
 //delete a user
-//delete http://localhost:5555/users
+//delete http://localhost:5555/users/:id
 //-------------------------------------------
-router.delete('/:id', (req, res) => {
-	const {id} = req.params
-	db('users')
-	.where({id})
-	.del()
-	.then(() => {
-
-		//delete a user and that user as being a possible friend
-
-		db('friends')
-		.where({id})
-		.del()
-		.then(response => {
-			return res.status(200).json(response)
-		})
-	})
-	.catch(error => {
-		return res.status(500).json(error)
-	})
-})
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  // finds and deletes user
+  db("users")
+    .where({ id })
+    .del()
+    .then(response => {
+      // deletes user's relationship in users_friends table
+      db("users_friends")
+        .where({ user_id: id })
+        .del()
+        .then(() => {
+          // deletes user relationship where he is a friend in users_friends table
+          db("users_friends")
+            .where({ friends_id: id })
+            .del()
+            .then(count => {
+              res.status(200).json(count);
+            })
+            .catch(error => {
+              res.status(500).json(error);
+            });
+        });
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
+});
 
 module.exports = router;

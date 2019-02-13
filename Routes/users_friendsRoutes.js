@@ -15,7 +15,7 @@ router.post('', (req, res) => {
 			return res.status(200).json({msg: 'you are already friends with user'})
 		} else {
 
-			//first we made he person our friend
+			//first we made the person our friend
 
 			db.insert({user_id, friends_id }).into('users_friends')
 			.then(() => {
@@ -76,21 +76,20 @@ router.post('', (req, res) => {
 ]
 */
 
-router.get('/:id', (req, res) => {
-	const {id} = req.params
-	db('friends')
-	.join('users_friends', 'users_friends.friends_id', '=', 'friends.id')
-	.join('users', 'users.id', '=', 'users_friends.user_id')
-	.where('friends.id', id)
-	.then(response => {
-		//console.log(response)
-		return res.status(200).json(response)
-	})
-	.catch(error => {
-		console.log(error)
-		return res.status(500).json(error)
-	})
-})
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+  db("users_friends")
+    .join("users", "users.id", "=", "users_friends.friends_id")
+    .where("users_friends.user_id", id)
+    .then(response => {
+      //console.log(response)
+      return res.status(200).json(response);
+    })
+    .catch(error => {
+      console.log(error);
+      return res.status(500).json(error);
+    });
+});
 
 //DELETE
 /*
