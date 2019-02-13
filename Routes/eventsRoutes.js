@@ -10,23 +10,40 @@ const db = require("../config.js")
 //-------------------------------------------
 router.post('', (req, res) => {
 	const {name, location, date, user_id } = req.body;
-	db.insert({name, location, date }).into('events')
-	.then(() => {
-		db('events')
-		.where({name, location, date })
-		.then(r1 => {
-			id = r1[0].id
-			let obj = {user_id, event_id: id}
-			db.insert(obj).into('users_events')
-			.then(r2 => {
-				return res.status(200).json(r2)
+
+	/* first we check to see if the event already exists*/
+
+	db('events')
+	.where({name, location, date, user_id })
+	.then(check => {
+		//if it does not already exist we can create it
+		if (check.length === 0){
+			db.insert({name}).into('events')
+			.then(() => {
+				db('events')
+				.where({name, location, date })
+				.then(r1 => { //extra work around to get the id of the event to pass to the many to many join table
+					id = r1[0].id
+					let obj = {user_id, event_id: id}
+					//now that event is created we sign up the user as someone going to the event
+					db.insert(obj).into('users_events')
+					.then(r2 => {
+						return res.status(200).json(r2)
+					})
+				})
 			})
-		})
+			.catch(error => {
+				console.log(error)
+				return res.status(500).json(error)
+			})//end of if statement
+		} else {
+			//if event already exists then we let the user know it is already there
+			return res.status(200).json({msg: 'event is already present'})
+		}
 	})
-	.catch(error => {
-		console.log(error)
-		return res.status(500).json(error)
-	})
+
+
+
 })
 
 //READ
