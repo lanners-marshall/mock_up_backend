@@ -28,12 +28,21 @@ router.post('', (req, res) => {
 
 				db.insert({name, email}).into('friends')
 				.then(response => {
+					
 					return res.status(201).json(response)
 				})
 				
 			})
 		} else {
-			return  res.status(200).json(response)
+
+			/*
+				this way you do the check the same way no matter what
+				for when a user signs in vs sign up on the front end
+				to get the id
+			*/
+			
+			let id = response[0].id
+			return  res.status(200).json([id])
 		}
 	})
 	.catch(error => {
