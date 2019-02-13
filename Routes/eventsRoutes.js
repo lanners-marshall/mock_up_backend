@@ -19,7 +19,7 @@ router.post('', (req, res) => {
 			let obj = {user_id, event_id: id}
 			db.insert(obj).into('users_events')
 			.then(r2 => {
-				return res.status(200).json(response)
+				return res.status(200).json(r2)
 			})
 		})
 	})
