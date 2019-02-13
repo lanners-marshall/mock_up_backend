@@ -10,28 +10,49 @@ const db = require('../config.js')
 router.post("", (req, res) => {
   const { name, email } = req.body;
   
-  db("users")
-    .insert({
-      name: name,
-      email: email
-    })
-    .then(ids => {
-      res.status(201).json(ids[0]);
-    })
-    .catch(err => {
+  //get request to check if user exists
+  db('users')
+  .where({ name, email })
+  .then(response => {
 
-    	/*
-	    	work around to get users id back if they are already in the the database
-	    	because we have users email set to unique
-    	*/
-
+    //if users is not already here imput user to database
+    if (response.length === 0){
       db('users')
-      .where({email})
-      .then(response => {
-      	res.status(200).json(response[0].id)
-      })
-    });
+      .insert({ name, email })
+      .then(user => {
+        return res.status(201).json(user[0])
+      }) //else return users
+    } else {
+      return res.status(200).json(response[0].id)
+    }
+  })
 });
+
+
+
+  // db("users")
+  //   .insert({
+  //     name: name,
+  //     email: email
+  //   })
+  //   .then(ids => {
+  //     res.status(201).json(ids[0]);
+  //   })
+  //   .catch(err => {
+
+      
+  //       work around to get users id back if they are already in the the database
+  //       because we have users email set to unique
+      
+
+  //     db('users')
+  //     .where({email})
+  //     .then(response => {
+  //       res.status(200).json(response[0].id)
+  //     })
+  //   });
+
+
 
 //READ
 //get all users
