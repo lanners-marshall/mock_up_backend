@@ -19,8 +19,13 @@ router.post("", (req, res) => {
     if (response.length === 0){
       db('users')
       .insert({ name, email })
-      .then(user => {
-        return res.status(201).json(user[0])
+      .then(() => {
+        //return res.status(201).json(user[0])
+        db('users')
+        .where({ name, email })
+        .then(response => {
+          return res.status(200).json(response[0].id)
+        })
       }) //else return users
     } else {
       return res.status(200).json(response[0].id)
