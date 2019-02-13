@@ -14,11 +14,11 @@ router.post('', (req, res) => {
 	/* first we check to see if the event already exists*/
 
 	db('events')
-	.where({name, location, date, user_id })
+	.where({name})
 	.then(check => {
 		//if it does not already exist we can create it
 		if (check.length === 0){
-			db.insert({name}).into('events')
+			db.insert({name, location, date }).into('events')
 			.then(() => {
 				db('events')
 				.where({name, location, date })

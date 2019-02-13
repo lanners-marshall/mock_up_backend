@@ -10,7 +10,7 @@ router.post('', (req, res) => {
 	const {name, location, user_id} = req.body
 	//check to see if it already is a favorite
 	db('favorites')
-	.where({name})
+	.where({name, location, user_id})
 	.then(response => {
 		//if already a favorite don't post to table
 		if (response.length > 0){
