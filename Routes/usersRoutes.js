@@ -34,32 +34,6 @@ router.post("", (req, res) => {
   })
 });
 
-
-
-  // db("users")
-  //   .insert({
-  //     name: name,
-  //     email: email
-  //   })
-  //   .then(ids => {
-  //     res.status(201).json(ids[0]);
-  //   })
-  //   .catch(err => {
-
-      
-  //       work around to get users id back if they are already in the the database
-  //       because we have users email set to unique
-      
-
-  //     db('users')
-  //     .where({email})
-  //     .then(response => {
-  //       res.status(200).json(response[0].id)
-  //     })
-  //   });
-
-
-
 //READ
 //get all users
 //get http://localhost:5555/users

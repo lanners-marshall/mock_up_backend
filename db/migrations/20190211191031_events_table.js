@@ -11,7 +11,7 @@ exports.up = function(knex, Promise) {
       .notNullable()
 
     tbl
-      .date('date')
+      .string('date')
       .notNullable()
 
   })
